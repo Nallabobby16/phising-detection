@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Phishing Detection Tool</h1>
+        <p>Enter URL :</p>
+        <input type="text" id="urlInput" placeholder="Enter URL here">
+        <button onclick="checkPhishing()">Detect Phising</button>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        function checkPhishing() {
+            const url = document.getElementById("urlInput").value;
+            fetch('/detect_phishing', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultElement = document.getElementById("result");
+                if (data.isPhishing) {
+                    resultElement.textContent = "Result : This URL is Bad";
+                    resultElement.style.color = "red";
+                } else {
+                    resultElement.textContent = "Result : This URL is Good";
+                    resultElement.style.color = "green";
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById("result").textContent = "Error checking URL. Please try again.";
+            });
+        }
+    </script>
+</body>
+</html>
